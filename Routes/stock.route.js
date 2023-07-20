@@ -4,18 +4,17 @@ const { stockModel } = require("../Model/stock.model");
 
 const stockRouter = express.Router();
 
-stockRouter.use(auth);
-
 
 stockRouter.get("/", async(req, res) => {
     try{
-     const stocks = await stockModel.find();
-     res.status(200).json(stocks);
+        const stocks = await stockModel.find();
+        res.status(200).json(stocks);
     }catch(err){
         res.status(400).json({error:err});
     }
 })
 
+stockRouter.use(auth);
 
 stockRouter.post("/add", async(req,res) => {
     try{
