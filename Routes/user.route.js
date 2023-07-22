@@ -40,7 +40,7 @@ userRouter.post("/login", async(req,res) => {
         bcrypt.compare(password, user.password, (err, decode) => {
             if(decode){
                 const token = jwt.sign({userId: user._id, name: user.name}, process.env.secretKey)
-                res.status(200).json({msg: "Logged In!!", token});
+                res.status(200).json({msg: "Logged In!!", token, name: user.name});
             }else{
                 res.status(400).json({error:err});
             }

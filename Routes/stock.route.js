@@ -7,7 +7,10 @@ const stockRouter = express.Router();
 
 stockRouter.get("/", async(req, res) => {
     try{
+        const {page, limit} = req.query;
+        
         const stocks = await stockModel.find();
+        console.log(stocks);
         res.status(200).json(stocks);
     }catch(err){
         res.status(400).json({error:err});
