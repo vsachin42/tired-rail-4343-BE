@@ -5,20 +5,39 @@ const { stockModel } = require("../Model/stock.model");
 const stockRouter = express.Router();
 
 
-stockRouter.get("/", async(req, res) => {
-    try{
-        const {page, limit} = req.query;
-        if(page && limit){
-        
-        }else{
-            const stocks = await stockModel.find();
-            // console.log(stocks);
-            res.status(200).json(stocks);
-        }
-    }catch(err){
-        res.status(400).json({error:err});
+stockRouter.get('/', async (req, res) => {
+    try {
+      const page = parseInt(req.query.page); 
+      const limit = parseInt(req.query.limit);
+  
+      if(page && limit){
+        const skip = (page - 1) * limit;
+  
+      const items = await stockModel.find().skip(skip).limit(limit);
+  
+      const totalItems = await stockModel.countDocuments();
+  
+      if (items.length === 0) {
+        return res.status(404).json({ message: 'Page not found' });
+      }
+  
+      res.status(200).json({
+        page,
+        limit,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        data: items,
+      });
+      }else{
+        const stocks = await stockModel.find();
+        res.status(200).json(stocks)
+      }
+
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
     }
-})
+  });
+
 
 stockRouter.get("/:id", async(req,res) => {
     try{
@@ -76,8 +95,6 @@ stockRouter.delete("/delete/:id", async(req,res) => {
         res.status(400).json({error});
     }
 })
-
-
 
 
 

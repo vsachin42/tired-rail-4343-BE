@@ -10,6 +10,9 @@ const userRouter = express.Router();
 userRouter.post("/register", async(req,res) => {
     try{
      const {name, email, password, city, DOB} = req.body;
+     const addToCart = [];
+     const purchasedStock = [];
+     const portfolio = [];
     const existingUser = await userModel.findOne({email});
     if(existingUser){
         res.status(400).json({msg: "User already exist, please login"})
@@ -18,7 +21,7 @@ userRouter.post("/register", async(req,res) => {
         if(err){
             res.status(400).json({error:err})
         }else{
-            const user = new userModel({name, email, password:hash, city, DOB});
+            const user = new userModel({name, email, password:hash, city, DOB, addToCart, purchasedStock, portfolio});
             await user.save();
             res.status(200).json({msg: "User has been registered", user: req.body})
         }
@@ -49,6 +52,16 @@ userRouter.post("/login", async(req,res) => {
     }catch(err){
         res.status(400).json({error:err});
     }
+})
+
+
+userRouter.get("/", async(req,res) =>  {
+   try{
+    const users = await userModel.find();
+    res.status(200).json(users);
+   }catch(err){
+    res.status(404).json({error:err})
+   }
 })
 
 

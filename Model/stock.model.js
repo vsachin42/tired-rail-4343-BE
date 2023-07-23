@@ -6,7 +6,9 @@ const stockSchema = mongoose.Schema({
      image: String,
      currentPrice: Number,
      change: Number,
-     percentChange: Number
+     percentChange: Number,
+     "52_week_high": Number,
+     "52_week_low": Number,
 }, {
     versionKey : false
 });

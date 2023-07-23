@@ -6,7 +6,10 @@ const userSchema = mongoose.Schema({
      email: String,
      password: String,
      city: String,
-     DOB: String
+     DOB: String,
+     addToCart: Array,
+     purchasedStock: Array,
+     portfolio: Array
 }, {
     versionKey : false
 });
