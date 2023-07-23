@@ -8,12 +8,29 @@ const stockRouter = express.Router();
 stockRouter.get("/", async(req, res) => {
     try{
         const {page, limit} = req.query;
+        if(page && limit){
         
-        const stocks = await stockModel.find();
-        console.log(stocks);
-        res.status(200).json(stocks);
+        }else{
+            const stocks = await stockModel.find();
+            // console.log(stocks);
+            res.status(200).json(stocks);
+        }
     }catch(err){
         res.status(400).json({error:err});
+    }
+})
+
+stockRouter.get("/:id", async(req,res) => {
+    try{
+     const id = req.params.id;
+     const stock = await stockModel.findOne({_id:id});
+     if(stock){
+        res.status(200).json({stock});
+     }else{
+        res.status(404).json({msg: "Stock not found"});
+     }
+    }catch(err){
+        res.status(404).json({error: err});
     }
 })
 
