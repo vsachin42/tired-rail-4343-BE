@@ -43,7 +43,7 @@ userRouter.post("/login", async(req,res) => {
         bcrypt.compare(password, user.password, (err, decode) => {
             if(decode){
                 const token = jwt.sign({userId: user._id, name: user.name}, process.env.secretKey)
-                res.status(200).json({msg: "Logged In!!", token, name: user.name});
+                res.status(200).json({msg: "Logged In!!", token, name:user.name, id:user._id});
             }else{
                 res.status(400).json({error:err});
             }
@@ -53,6 +53,77 @@ userRouter.post("/login", async(req,res) => {
         res.status(400).json({error:err});
     }
 })
+
+
+userRouter.get("/:id", async(req,res) => {
+    try{
+        const id = req.params.id;
+       const user = await userModel.findOne({_id:id});
+       if(user){
+        res.status(200).json({user});
+       }else{
+        res.status(404).json({msg: "User not found"});
+       }
+    }catch(err){
+        res.status(400).json({error:err})
+    }
+})
+
+
+userRouter.post("/addcart/:id", async(req,res) => {
+    try{
+       const data = req.body;
+      const id = req.params.id;
+      const user = await userModel.findOne({_id:id});
+      if(user){
+         await user.addToCart.push(data);
+         await user.save();
+         res.status(200).json({msg: "Data has been added"});
+      }else{
+        res.status(404).json({msg: "User not found"})
+      }
+    }catch(err){
+        res.status(404).json({error:err})
+    }
+})
+
+
+userRouter.post("/purchasedStock/:id", async(req,res) => {
+    try{
+       const data = req.body;
+      const id = req.params.id;
+      const user = await userModel.findOne({_id:id});
+      if(user){
+         await user.purchasedStock.push(data);
+         await user.save();
+         res.status(200).json({msg: "Data has been added"});
+      }else{
+        res.status(404).json({msg: "User not found"})
+      }
+    }catch(err){
+        res.status(404).json({error:err})
+    }
+})
+
+
+userRouter.post("/portfolio/:id", async(req,res) => {
+    try{
+       const data = req.body;
+      const id = req.params.id;
+      const user = await userModel.findOne({_id:id});
+      if(user){
+         await user.portfolio.push(data);
+         await user.save();
+         res.status(200).json({msg: "Data has been added"});
+      }else{
+        res.status(404).json({msg: "User not found"})
+      }
+    }catch(err){
+        res.status(404).json({error:err})
+    }
+})
+
+
 
 
 module.exports = {

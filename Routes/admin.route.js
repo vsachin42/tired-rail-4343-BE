@@ -7,7 +7,7 @@ const adminRouter = express.Router();
 
 adminRouter.post('/register', async (req, res) => {
   try {
-    const {name, email, password } = req.body;
+    const {email, password } = req.body;
     const existingAdmin = await adminModel.findOne({ email });
     if (existingAdmin) {
       return res.status(409).json({ message: 'Admin already exists' });
@@ -16,7 +16,7 @@ adminRouter.post('/register', async (req, res) => {
         if(err){
             res.status(400).json({error:err})
         }else{
-            const admin = new adminModel({name, email, password:hash});
+            const admin = new adminModel({email, password:hash});
             await admin.save();
             res.status(200).json({msg: "User has been registered", admin: req.body})
         }
@@ -37,8 +37,8 @@ adminRouter.post('/login', async (req, res) => {
 
     bcrypt.compare(password, admin.password, (err, decode) => {
         if(decode){
-            const token = jwt.sign({adminId: admin._id, name: admin.name}, process.env.secretKey)
-            res.status(200).json({msg: "Logged In!!", token, admin: admin.name});
+            const token = jwt.sign({adminId: admin._id}, process.env.secretKey)
+            res.status(200).json({msg: "Logged In!!", token});
         }else{
             res.status(400).json({error:err});
         }
